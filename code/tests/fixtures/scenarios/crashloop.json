@@ -1,0 +1,5 @@
+{
+  "scenario": "crashloop",
+  "pod": "api-1",
+  "signal": "BackOff restarting failed container"
+}

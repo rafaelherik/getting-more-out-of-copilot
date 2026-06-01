@@ -1,0 +1,5 @@
+{
+  "scenario": "imagepullbackoff",
+  "pod": "api-1",
+  "signal": "Failed to pull image"
+}

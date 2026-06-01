@@ -1,0 +1,5 @@
+{
+  "scenario": "unschedulable",
+  "pod": "api-1",
+  "signal": "0/3 nodes are available"
+}

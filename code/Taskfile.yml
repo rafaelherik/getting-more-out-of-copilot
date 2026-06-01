@@ -1,0 +1,67 @@
+version: "3"
+
+tasks:
+  sync:
+    cmds:
+      - uv sync --group dev
+
+  lock:
+    cmds:
+      - uv lock
+
+  deps-verify:
+    cmds:
+      - uv run python -c "import importlib.metadata as m; print('agent-framework', m.version('agent-framework')); print('azure-identity', m.version('azure-identity'))"
+
+  test:
+    cmds:
+      - uv run pytest {{.CLI_ARGS}}
+
+  scenario:crashloop:
+    env:
+      PYTHONPATH: src
+      DEEPTURN_TEST_SCENARIO: crashloop
+    cmds:
+      - uv run python -m typer src/deepturn_agents/cli.py run investigate default/deploy-api --out-dir ./artifacts/crashloop
+
+  scenario:imagepullbackoff:
+    env:
+      PYTHONPATH: src
+      DEEPTURN_TEST_SCENARIO: imagepullbackoff
+    cmds:
+      - uv run python -m typer src/deepturn_agents/cli.py run investigate default/deploy-api --out-dir ./artifacts/imagepullbackoff
+
+  scenario:unschedulable:
+    env:
+      PYTHONPATH: src
+      DEEPTURN_TEST_SCENARIO: unschedulable
+    cmds:
+      - uv run python -m typer src/deepturn_agents/cli.py run investigate default/deploy-api --out-dir ./artifacts/unschedulable
+
+  scenario:oom-probe-fail:
+    env:
+      PYTHONPATH: src
+      DEEPTURN_TEST_SCENARIO: oom_probe_fail
+    cmds:
+      - uv run python -m typer src/deepturn_agents/cli.py run investigate default/deploy-api --out-dir ./artifacts/oom_probe_fail
+
+  scenario:all:
+    cmds:
+      - task scenario:crashloop
+      - task scenario:imagepullbackoff
+      - task scenario:unschedulable
+      - task scenario:oom-probe-fail
+
+  lint:
+    cmds:
+      - uv run ruff check src tests {{.CLI_ARGS}}
+
+  typecheck:
+    cmds:
+      - uv run mypy src {{.CLI_ARGS}}
+
+  quality:
+    cmds:
+      - task lint
+      - task typecheck
+      - task test -- -v

@@ -1,0 +1,5 @@
+{
+  "scenario": "oom_probe_fail",
+  "pod": "api-1",
+  "signal": "OOMKilled and failed liveness probes"
+}
